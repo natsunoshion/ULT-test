@@ -26,7 +26,7 @@ int main() {
   makecontext(&fiber_context, fiber_function, 0);
 
   // 保存当前上下文（主上下文），并切换到纤程
-  printf("主线程即将切换到协程...\n");
+  printf("主线程即将切换到纤程...\n");
   swapcontext(&main_context, &fiber_context);
 
   // 在主线程中执行 sleep

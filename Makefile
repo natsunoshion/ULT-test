@@ -5,3 +5,7 @@ coroutine:
 fiber:
 	g++ fiber.cpp -o fiber
 	./fiber
+
+clean:
+	rm ./fiber
+	rm ./coroutine
