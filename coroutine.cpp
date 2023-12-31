@@ -2,15 +2,16 @@
 #include <coroutine>
 #include <iostream>
 #include <thread>
+#include <unistd.h>
 
 struct SleepAwaitable {
-  std::chrono::seconds duration;
+  unsigned int duration;
 
-  bool await_ready() const noexcept { return duration.count() <= 0; }
+  bool await_ready() const noexcept { return duration == 0; }
   void await_suspend(std::coroutine_handle<>) const {
     std::thread([this] {
       std::cout << "协程sleep开始" << std::endl;
-      std::this_thread::sleep_for(duration);
+      sleep(duration);
       std::cout << "协程sleep结束" << std::endl;
     }).detach();
   }
@@ -27,10 +28,9 @@ struct AsyncTask {
   };
 };
 
-// 使用协程
 AsyncTask async_task() {
   std::cout << "协程任务开始" << std::endl;
-  co_await SleepAwaitable{std::chrono::seconds(3)}; // 等待3秒
+  co_await SleepAwaitable{3}; // 等待3秒
   std::cout << "协程任务结束" << std::endl;
 }
 
@@ -40,6 +40,6 @@ int main() {
   // 在主线程中执行其他操作
   for (int i = 0; i < 5; ++i) {
     std::cout << "主程序执行中，这是第" << i + 1 << "秒..." << std::endl;
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    sleep(1);
   }
 }
